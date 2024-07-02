@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .square{
+            height: 5vw;
+            width: 5vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* background-color: #fff; */
+        }
+        .piece{
+            font-size: xx-large;
+            cursor: pointer;
+            -webkit-user-drag: element;
+            background-color: transparent;
+            
+        }
+
+        .piece.draggable{
+            cursor: grab;
+        }
+        .dragging{
+            opacity: 0.5;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="main h-screen w-full flex justify-center items-center bg-gray-800">
+        <div class="movevalid apsolute top-50 left-10"></div>
+        <div class=" chessboard h-[40vw] w-[40vw] flex flex-wrap    bg-gray-700">
+            
+        </div>
+        
+    </div>
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js" integrity="sha512-luMnTJZ7oEchNDZAtQhgjomP1eZefnl82ruTH/3Oj/Yu5qYtwL7+dVRccACS/Snp1lFXq188XFipHKYE75IaQQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js" integrity="sha512-xRllwz2gdZciIB+AkEbeq+gVhX8VB8XsfqeFbUh+SzHlN96dEduwtTuVuc2u9EROlmW9+yhRlxjif66ORpsgVA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+
+    <script src="/js/chessgame.js"></script>
+</body>
+</html>
