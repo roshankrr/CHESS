@@ -22,6 +22,21 @@
             
         }
 
+        @media (max-width:600px) {
+            .square{
+                height: 10vw;
+                width: 10vw;
+            }
+            .piece{
+                font-size: x-large;
+            }
+            .chessboard{
+                height: 80vw;
+                width: 80vw;
+            }
+            
+        }
+
         .piece.draggable{
             cursor: grab;
         }
@@ -35,7 +50,7 @@
 <body>
     <div class="main h-screen w-full flex justify-center items-center bg-gray-800">
         <div class="movevalid apsolute top-50 left-10"></div>
-        <div class=" chessboard h-[40vw] w-[40vw] flex flex-wrap  bg-gray-700">
+        <div class=" chessboard md:h-[40vw] md:w-[40vw] flex flex-wrap  bg-gray-700">
             
         </div>
         
