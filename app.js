@@ -68,12 +68,14 @@ io.on("connection",function(uniquesocket){
     uniquesocket.on("disconnect",function(){
         if(uniquesocket.id==player.white){
             delete player.white;
+            chess.reset();
         }
         else if(uniquesocket.id==player.black){
             delete player.black;
+            chess.reset();
         }
         console.log('user disconnected');
-        chess.reset();
+
         
 
     })
