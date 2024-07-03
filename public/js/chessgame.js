@@ -5,12 +5,12 @@ let draggedPiece = null;
 let sourceSquare = null;
 let playerRole = null;
 
-const rotate=()=>{
-    if(playerRole==="b"){
-        boardElement.style.rotate='180deg';
+const rotate = () => {
+    if (playerRole === "b") {
+        boardElement.style.rotate = '180deg';
         const dibba = document.querySelectorAll('.square');
-        dibba.forEach((dibba)=>{
-            dibba.style.transform='rotate(180deg)';
+        dibba.forEach((dibba) => {
+            dibba.style.transform = 'rotate(180deg)';
         });
     }
 }
@@ -19,7 +19,6 @@ socket.on('playerRole', function (role) {
     playerRole = role;
     renderBoard();
     rotate();
-
 });
 
 const renderBoard = () => {
@@ -36,18 +35,26 @@ const renderBoard = () => {
             boardElement.appendChild(square);
             square.dataset.row = rowIndex;
             square.dataset.col = colIndex;
-            
-            if (col!=null) {
+
+            if (col != null) {
                 const pieceElement = document.createElement("div");
                 pieceElement.classList.add(
                     "piece",
                     col.color === 'w' ? 'white' : 'black'
                 );
                 pieceElement.innerText = getPieceUniqcode(col);
-                // console.log(col.color)
                 pieceElement.draggable = playerRole === col.color;
 
                 pieceElement.addEventListener('dragstart', (e) => {
+                    if (pieceElement.draggable) {
+                        draggedPiece = pieceElement;
+                        pieceElement.classList.add("piece.draggable")
+                        sourceSquare = { row: rowIndex, col: colIndex };
+                        e.dataTransfer.setData("text/plain", "");
+                    }
+                });
+
+                pieceElement.addEventListener('touchstart', (e) => {
                     if (pieceElement.draggable) {
                         draggedPiece = pieceElement;
                         pieceElement.classList.add("piece.draggable")
@@ -61,11 +68,36 @@ const renderBoard = () => {
                     sourceSquare = null;
                 });
 
+                pieceElement.addEventListener('touchend', (e) => {
+                    const touch = e.changedTouches[0];
+                    const targetSquare = document.elementFromPoint(touch.clientX, touch.clientY);
+                    if (targetSquare && targetSquare.classList.contains('square')) {
+                        const targetPosition = {
+                            row: parseInt(targetSquare.dataset.row),
+                            col: parseInt(targetSquare.dataset.col)
+                        };
+                        handleMove(sourceSquare, targetPosition);
+                    }
+                    draggedPiece = null;
+                    sourceSquare = null;
+                });
+
                 square.appendChild(pieceElement);
             }
 
             square.addEventListener('dragover', (e) => {
                 e.preventDefault();
+            });
+
+            square.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const pieceElement = document.querySelector('.piece.draggable');
+                if (pieceElement) {
+                    pieceElement.style.position = 'absolute';
+                    pieceElement.style.left = `${touch.clientX - pieceElement.offsetWidth / 2}px`;
+                    pieceElement.style.top = `${touch.clientY - pieceElement.offsetHeight / 2}px`;
+                }
             });
 
             square.addEventListener("drop", (e) => {
@@ -82,20 +114,20 @@ const renderBoard = () => {
     });
 }
 
-const handleMove = (source,target) => {
-    const move={
-        from: `${String.fromCharCode(97+source.col)}${8-source.row}` ,
-        to: `${String.fromCharCode(97+target.col)}${8-target.row}`  ,
+const handleMove = (source, target) => {
+    const move = {
+        from: `${String.fromCharCode(97 + source.col)}${8 - source.row}`,
+        to: `${String.fromCharCode(97 + target.col)}${8 - target.row}`,
         promotion: "q"
     };
-    socket.emit("move",move);
-    socket.on('invalidMove',()=>{
-        const invalidMove=document.querySelector('.movevalid')
-        invalidMove.innerText="Invalid Move";
-        setTimeout(()=>{
-            invalidMove.innerText="";
-        },2000)
-    })
+    socket.emit("move", move);
+    socket.on('invalidMove', () => {
+        const invalidMove = document.querySelector('.movevalid');
+        invalidMove.innerText = "Invalid Move";
+        setTimeout(() => {
+            invalidMove.innerText = "";
+        }, 2000);
+    });
 }
 
 const getPieceUniqcode = (piece) => {
@@ -124,31 +156,26 @@ const getPieceUniqcode = (piece) => {
     }
 }
 
-
-
-
-
-socket.on('spectator',function(){
-    playerRole=null;
+socket.on('spectator', function () {
+    playerRole = null;
     renderBoard();
     rotate();
 })
 
-socket.on("boardState",function(fen){
+socket.on("boardState", function (fen) {
     chess.load(fen);
     renderBoard();
     rotate();
 })
 
-socket.on("move",function(move){
+socket.on("move", function (move) {
     chess.move(move);
     renderBoard();
     rotate();
 })
 
-socket.on("checkmate",function(){
+socket.on("checkmate", function () {
     alert("GameOver!!");
 })
-
 
 renderBoard();
