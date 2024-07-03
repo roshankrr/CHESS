@@ -5,9 +5,21 @@ let draggedPiece = null;
 let sourceSquare = null;
 let playerRole = null;
 
+const rotate=()=>{
+    if(playerRole==="b"){
+        boardElement.style.rotate='180deg';
+        const dibba = document.querySelectorAll('.square');
+        dibba.forEach((dibba)=>{
+            dibba.style.transform='rotate(180deg)';
+        });
+    }
+}
+
 socket.on('playerRole', function (role) {
     playerRole = role;
     renderBoard();
+    rotate();
+
 });
 
 const renderBoard = () => {
@@ -119,15 +131,24 @@ const getPieceUniqcode = (piece) => {
 socket.on('spectator',function(){
     playerRole=null;
     renderBoard();
+    rotate();
 })
 
 socket.on("boardState",function(fen){
     chess.load(fen);
     renderBoard();
+    rotate();
 })
 
 socket.on("move",function(move){
     chess.move(move);
     renderBoard();
+    rotate();
 })
+
+socket.on("checkmate",function(){
+    alert("GameOver!!");
+})
+
+
 renderBoard();

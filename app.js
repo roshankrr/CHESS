@@ -47,6 +47,10 @@ io.on("connection",function(uniquesocket){
                 currentPlayer=chess.turn();
                 io.emit("move",move);
                 io.emit("boardState",chess.fen());
+                if(chess.isCheckmate()){
+                    io.emit('checkmate');
+                    chess.reset();
+                }
             }
             else{
                 // console.log("Invalid Move :",move);
@@ -56,6 +60,7 @@ io.on("connection",function(uniquesocket){
             io.emit('invalidMove');
             
         }
+        
 
 
     })
@@ -68,6 +73,8 @@ io.on("connection",function(uniquesocket){
             delete player.black;
         }
         console.log('user disconnected');
+        chess.reset();
+        
 
     })
 
