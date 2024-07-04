@@ -15,10 +15,26 @@ const rotate = () => {
     }
 }
 
+const yourrole=()=>{
+    const role=document.querySelector('.yourrole');
+    if(playerRole==="w"){
+        role.innerText="You Are Playing as White"
+    }
+    else if(playerRole==="b"){
+                role.innerText="You Are Playing as Black"
+    }
+    else{
+                role.innerText="You Are Spectator"
+    }
+
+}
+
+
 socket.on('playerRole', function (role) {
     playerRole = role;
     renderBoard();
     rotate();
+    yourrole();
 });
 
 const renderBoard = () => {
